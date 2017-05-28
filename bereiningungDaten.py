@@ -9,7 +9,7 @@ import pg
 pg=pg.connect(dbname='election', user='julez', passwd='lausbu3b')
 # hashtags finden und schneiden
 import re 
-regex = re.compile('[^a-zA-Z]') 
+regex = re.compile('[^a-zA-Z_0-9]') 
 
 # workbook mit unbereinigten Daten laden
 wb = load_workbook('american-election-tweets.xlsx')
@@ -114,11 +114,12 @@ for row in range(0, wslen):
 				hashtag_id_list += ' ' + str(zaehlerID)
 				current_hash_list += ' ' + str(temp[i])
 				zaehlerID+=1
+	if (hashtag_id_list == ''):
+		ws_new[cell_hash_id_write] = 'None'
+		ws_new[cell_hash_write] = 'None'
 	else:
-		hashtag_id_list += str(None)
-		current_hash_list += str(None)
-	ws_new[cell_hash_id_write] = hashtag_id_list
-	ws_new[cell_hash_write] = current_hash_list
+		ws_new[cell_hash_id_write] = hashtag_id_list
+		ws_new[cell_hash_write] = current_hash_list
 	
 	
 # für Relation tweet:
@@ -153,15 +154,5 @@ for row in range(0, wslen):
 	auth = pg.escape_string(str(ws[cell_auth_read].value))
 	ws_new[cell_auth_write] = auth
 	
-
-
-
-
-
-
-
-
-
-
-
+	
 wb_new.save(filename = dest_filename)
