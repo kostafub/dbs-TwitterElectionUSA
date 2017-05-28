@@ -6,7 +6,7 @@ from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
 # string-escape für sql
 import pg 
-pg=pg.connect(dbname='election', user='julez', passwd='lausbu3b')
+pg=pg.connect(dbname='election', user='julez', passwd='haha')
 # hashtags finden und schneiden
 import re 
 regex = re.compile('[^a-zA-Z_0-9]') 
