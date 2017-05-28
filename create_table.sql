@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS tweet (
 		references handle(handle_id),
 	timeTweeted timestamp NOT NULL,
 	PRIMARY KEY(timeTweeted, handle_id),
-	favouriteCount integer,
-	retweetCount integer,
+	favouriteCount integer CONSTRAINT positive_favcount CHECK (favouriteCount >= 0),
+	retweetCount integer CONSTRAINT positive_retweetcount CHECK (retweetCount >= 0),
 	text varchar NOT NULL,
 	originalAuthor varchar
 );
