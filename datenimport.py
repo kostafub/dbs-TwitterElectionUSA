@@ -2,7 +2,7 @@
 from openpyxl import load_workbook
 # Verbindung zur Datenbank und string-escape für sql
 import pg 
-pg=pg.connect(dbname='election', user='julez', passwd='lausbu3b')
+pg=pg.connect(dbname='election', user='julez', passwd='haha')
 
 # workbook mit aufbereiteten Daten laden
 wb = load_workbook('american-election-repair.xlsx')
