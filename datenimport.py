@@ -1,6 +1,6 @@
 # *.xlsx laden und lesen
 from openpyxl import load_workbook
-# Verbindung zur Datenbank und string-escape für sql
+# Verbindung zur Datenbank und string-escape fuer sql
 from pgdb import connect
 try:
 	pg=connect(dbname='election', user='julez', password='haha')
