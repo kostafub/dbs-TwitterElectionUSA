@@ -4,7 +4,7 @@ from openpyxl import load_workbook
 from openpyxl import Workbook
 from openpyxl.compat import range
 from openpyxl.utils import get_column_letter
-# string-escape für sql
+# string-escape fuer sql
 import pg 
 pg=pg.connect(dbname='election', user='julez', passwd='haha')
 # hashtags finden und schneiden
@@ -16,13 +16,13 @@ wb = load_workbook('american-election-tweets.xlsx')
 ws = wb['american-election-tweets']
 wslen = ws.max_row-1
 
-# wb für bereinigte Daten zum Schreiben erstellen
+# wb fuer bereinigte Daten zum Schreiben erstellen
 wb_new = Workbook()
 dest_filename = 'american-election-repair.xlsx'
 ws_new = wb_new.active
 ws_new.title = 'bereinigt'
 
-# Hilfsfunktion ist_enthalten für handle/ tag
+# Hilfsfunktion ist_enthalten fuer handle/ tag
 def ist_enthalten (cell_value, liste):
 	lenListe = len(liste)
 	for name in range(0,lenListe):
@@ -33,7 +33,7 @@ def ist_enthalten (cell_value, liste):
 		return False
 
 
-# für Relation handle:
+# fuer Relation handle:
 handle_list = []
 zaehlerID = 0
 ws_new['A1'] = 'handle_id'
@@ -59,7 +59,13 @@ for row in range(0, wslen):
 		ws_new[cell_handle_write] = cell_read
 		zaehlerID+=1
 
-# für Relation hashtag:
+# nur Auflistung der handles
+ws_new['K1'] = 'handle_name'		
+for name in range(0,len(handle_list)):
+	cell_name_write = "{col}{row}".format(col='K', row=(name+2))
+	ws_new[cell_name_write] = handle_list[name]
+
+# fuer Relation hashtag:
 hashtag_list = []
 zaehlerID = 0
 ws_new['C1'] = 'text'
@@ -84,7 +90,9 @@ for row in range(0, wslen):
 	temp=[tag.strip("#") for tag in tags.split() if tag.startswith("#")]
 	if (len(temp)>0):
 		temp[0] = regex.sub('', temp[0])
-		if (zaehlerID==0):
+		if (temp[0] == ''):
+			pass
+		elif (zaehlerID==0):
 			temp[0] = regex.sub('', temp[0])
 			hashtag_list = [temp[zaehlerID]]
 			current_hash_list += str(temp[zaehlerID])
@@ -104,7 +112,9 @@ for row in range(0, wslen):
 	if (len(temp)>1):
 		for i in range(1,len(temp)):
 			temp[i] = regex.sub('', temp[i])
-			if ist_enthalten(temp[i], hashtag_list)==True:
+			if (temp[i] == ''):
+				pass
+			elif ist_enthalten(temp[i], hashtag_list)==True:
 				for id in range(0,len(hashtag_list)):
 					if (hashtag_list[id] == temp[i]):
 						hashtag_id_list += ' ' + str(id)
@@ -115,16 +125,22 @@ for row in range(0, wslen):
 				current_hash_list += ' ' + str(temp[i])
 				zaehlerID+=1
 	if (hashtag_id_list == ''):
-		ws_new[cell_hash_id_write] = 'None'
-		ws_new[cell_hash_write] = 'None'
+		ws_new[cell_hash_id_write] = ''
+		ws_new[cell_hash_write] = ''
 	else:
 		ws_new[cell_hash_id_write] = hashtag_id_list
 		ws_new[cell_hash_write] = current_hash_list
+
+# nur Auflistung der Namen
+# ACHTUNG: gross/klein-Schreibung beruecksichtigt
+ws_new['J1'] = 'tag'		
+for tag in range(0,len(hashtag_list)):
+	cell_tag_write = "{col}{row}".format(col='J', row=(tag+2))
+	ws_new[cell_tag_write] = str(hashtag_list[tag])
 	
 	
-# für Relation tweet:
+# fuer Relation tweet:
 col_tweet = ['E','I','H','D'] # Auswahl der Spalten
-# timestamp
 tweet_list = []
 zaehlerID = 0
 ws_new['F1'] = 'timeTweeted'
@@ -151,7 +167,10 @@ for row in range(0, wslen):
 	cell_auth_read = "{col}{row}".format(col='D', row=(row+2))
 	cell_auth_write = "{col}{row}".format(col='I', row=(row+2))
 	kl=ws[cell_auth_read].value
-	auth = pg.escape_string(str(ws[cell_auth_read].value))
+	if (str(kl) == 'None'):
+		auth = ''
+	else:
+		auth = str(ws[cell_auth_read].value)
 	ws_new[cell_auth_write] = auth
 	
 	
