@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS tweet (
 
 DROP TABLE IF EXISTS hashtag CASCADE;
 CREATE TABLE IF NOT EXISTS hashtag (
-	tag varchar PRIMARY KEY
+	tag_id integer PRIMARY KEY,
+	tag varchar
 );
 
 DROP TABLE IF EXISTS has CASCADE;
@@ -28,6 +29,6 @@ CREATE TABLE IF NOT EXISTS has (
 	handle_id integer NOT NULL,
 	FOREIGN KEY (timeTweeted, handle_id) 
 		references tweet(timeTweeted, handle_id),
-	tag varchar
-		references hashtag(tag)
+	tag_id integer
+		references hashtag(tag_id)
 );
