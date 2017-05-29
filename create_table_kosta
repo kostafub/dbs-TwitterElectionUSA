@@ -1,0 +1,30 @@
+DROP TABLE IF EXISTS tweet CASCADE;
+CREATE TABLE tweet
+(
+ handle VARCHAR(18) NOT NULL,
+ timeTweeted TIMESTAMP NOT NULL,
+ text VARCHAR(140) NOT NULL,
+ retweetCount INT NOT NULL,
+ favoriteCount INT NOT NULL,
+ originalAuthor VARCHAR(18),
+ PRIMARY KEY (timeTweeted, handle)
+);
+
+DROP TABLE IF EXISTS hashtag CASCADE;
+CREATE TABLE hashtag
+(
+ tag VARCHAR(140) NOT NULL,
+ PRIMARY KEY (tag)
+);
+  
+DROP TABLE IF EXISTS has CASCADE;
+CREATE TABLE has
+(
+ handle BOOLEAN NOT NULL,
+ timeTweeted TIMESTAMP NOT NULL,
+ tag VARCHAR(140) NOT NULL,
+ PRIMARY KEY (timeTweeted, handle),
+ FOREIGN KEY (timeTweeted, handle) REFERENCES tweet(timeTweeted, handle),
+ FOREIGN KEY (tag) REFERENCES hashtag(tag)
+  );
+  
